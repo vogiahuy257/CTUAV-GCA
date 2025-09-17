@@ -45,41 +45,40 @@ Item {
 
     property bool isPlanView: true
 
-    Rectangle {
-                visible: isPlanView
-                width: ScreenTools.screenWidth
-                height: ScreenTools.screenHeight
-                color: "transparent"
-                z: 0
+Rectangle {
+        visible: !planView.visible
+        anchors.fill: parent
+        width: ScreenTools.screenWidth
+        height: ScreenTools.screenHeight
+        color: "transparent"
+        z: 0
 
-                // Header Image
-                Image {
-                    anchors.top: parent.top
-                    anchors.horizontalCenter: parent.horizontalCenter
+        // build tren android
+        // Header Image (fit theo chiều rộng)
+        Image {
+            anchors.top: parent.top
+            anchors.topMargin: 5
+            anchors.horizontalCenter: parent.horizontalCenter 
+            width: parent.width * 1.45
+            height: parent.height * 0.120  
+            source: "qrc:/res/header.png"
+            opacity: 0.8
+            fillMode: Image.Stretch  // Cắt để phủ đầy
+        }
 
-                    source: "qrc:/res/header.png"
-                    opacity: 0.8
-
-                    // PC mặc định, Mobile nếu isMobile
-                    width: ScreenTools.isMobile ? parent.width * 1.45 : parent.width
-                    height: ScreenTools.isMobile ? parent.height * 0.12 : 80
-                    fillMode: ScreenTools.isMobile ? Image.Stretch : Image.PreserveAspectCrop
-                }
-
-                // Footer Image
-                Image {
-                    anchors.bottom: parent.bottom
-                    anchors.horizontalCenter: parent.horizontalCenter
-
-                    source: "qrc:/res/footer.png"
-                    opacity: 0.8
-
-                    width: ScreenTools.isMobile ? parent.width * 1.45 : parent.width
-                    height: ScreenTools.isMobile ? parent.height * 0.12 : 80
-                    fillMode: ScreenTools.isMobile ? Image.Stretch : Image.PreserveAspectCrop
-                }
-            }
-
+        // Footer Image (fit theo chiều rộng)
+        Image {
+            id: backgroundImageBottom
+            anchors.topMargin: 5
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width * 1.45
+            height: parent.height * 0.120
+            source: "qrc:/res/footer.png"
+            opacity: 0.8
+            fillMode: Image.Stretch // Cắt để phủ đầy
+        }
+    }
 
     PlanMasterController {
         id:                     _planController
@@ -197,7 +196,7 @@ Item {
                 anchors.right:          parent.right
                 anchors.top:            parent.top
                 anchors.margins:        _toolsMargin
-                anchors.topMargin:      ScreenTools.isMobile ? toolbar.height + 15 : toolbar.height + 24
+                anchors.topMargin:      ScreenTools.isMobile ? toolbar.height + 15 : toolbar.height + 15
                 item1IsFullSettingsKey: "MainFlyWindowIsMap"
                 item1:                  mapControl
                 item2:                  QGroundControl.videoManager.hasVideo ? videoControl : null

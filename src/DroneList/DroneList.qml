@@ -30,7 +30,7 @@ Rectangle {
     
     property string selectedType: droneTypes[0]
     property bool isMobile: ScreenTools.isMobile
-    property int fontSize: isMobile ? 10 : 14
+    property int fontSize: isMobile ? 10 : 10
     property var selectedDrone: null
     property bool showDetailOverlay: false
 
@@ -112,7 +112,7 @@ Rectangle {
                     anchors.fill: parent
                     // cellWidth: isMobile ? (width) : (width / 4)
                     // cellHeight: cellWidth
-                    cellWidth: isMobile ? (width / 3) -  12 : (width / 4) - 2  // trừ đi khoảng spacing
+                    cellWidth: isMobile ? (width / 3) -  12 : (width / 3) -  12  // trừ đi khoảng spacing
                     cellHeight: cellWidth
 
                     model: droneMap[selectedType]
@@ -120,7 +120,7 @@ Rectangle {
                     delegate: Column {
                         width: GridView.view.cellWidth
                         height: GridView.view.cellHeight
-                        spacing: isMobile ? 12 : 2
+                        spacing: isMobile ? 12 : 12
 
                         Item {
                             width: parent.width * 0.9
@@ -272,8 +272,8 @@ Rectangle {
                                         wrapMode: Text.WordWrap
                                     }
                                     Item {
-                                        width: isMobile ? 80 : 180
-                                        height: isMobile ? 26 : 30
+                                        width: isMobile ? 80 : 80
+                                        height: isMobile ? 26 : 26
 
                                         Rectangle {
                                             anchors.fill: parent
@@ -379,7 +379,7 @@ Rectangle {
                 RowLayout {
                     Layout.alignment: Qt.AlignRight
                     spacing: 8
-                    visible: true
+                    visible: false //true
 
                     Item {
                         width: confirmText.paintedWidth + 20
@@ -443,7 +443,7 @@ Rectangle {
                 // Nút đóng
                 Rectangle {
                     id: closeButton
-                    width: isMobile ? 28 : 40 
+                    width: isMobile ? 28 : 28
                     height: width
                     radius: 18
                     color: qgcPal.globalTheme === QGCPalette.Light ? "#d3d3d3" : "#3d3d3d"
@@ -476,27 +476,27 @@ Rectangle {
                     ListView {
                         id: galleryListView
                         orientation: ListView.Horizontal
-                        height: Screen.height * (isMobile ? 0.8 : 0.6)
+                        height: Screen.height *  0.8//(isMobile ? 0.8 : 0.6)
                         anchors.left: parent.left
                         anchors.right: parent.right
                         anchors.top: parent.top
-                        anchors.topMargin:  Screen.height * (isMobile ? 0.175 : 0.125)
+                        anchors.topMargin:  Screen.height * 0.175//(isMobile ? 0.175 : 0.125)
                         spacing: 24
                         clip: false  // Cho phép phóng to vượt ra ngoài
                         model: selectedDrone && selectedDrone.gallery ? selectedDrone.gallery : []
                         snapMode: ListView.SnapToItem
-                        preferredHighlightBegin: (width - (Screen.width * (isMobile ? 0.5 : 0.6))) / 2
-                        preferredHighlightEnd: (width - (Screen.width * (isMobile ? 0.5 : 0.6))) / 2
+                        preferredHighlightBegin: (width - (Screen.width * (isMobile ? 0.5 : 0.5))) / 2
+                        preferredHighlightEnd: (width - (Screen.width * (isMobile ? 0.5 : 0.5))) / 2
                         highlightRangeMode: ListView.StrictlyEnforceRange
                         interactive: true
 
                         delegate: Item {
-                            width: (Screen.width * (isMobile ? 0.5 : 0.6))
-                            height: isMobile ? 240 : 540
+                            width: (Screen.width * (isMobile ? 0.5 : 0.5))
+                            height: isMobile ? 240 : 240
                             property real centerPos: galleryListView.contentX + galleryListView.width / 2
                             property real itemCenter: x + width / 2
                             property real dist: Math.abs(itemCenter - centerPos)
-                            property real scaleFactor: Math.max(0.8, 1.2 - dist / (isMobile ? 0.5 : 0.6))
+                            property real scaleFactor: Math.max(0.8, 1.2 - dist / (isMobile ? 0.5 : 0.5))
 
                             opacity: dist < 20 ? 1.0 : 0.5
 
