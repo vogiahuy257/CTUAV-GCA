@@ -407,7 +407,7 @@ Rectangle {
                                 onClicked: {
                                     mainWindow.showMessageDialog(
                                         qsTr("Xác nhận Upload"),
-                                        qsTr("Bạn có chắc chắn muốn upload parameters cho drone không?"),
+                                        qsTr("Bạn có chắc chắn muốn upload parameters cho drone không?\nHành động này sẽ ghi đè các thông số hiện tại trên drone."),
                                         Dialog.Cancel | Dialog.Ok,
                                         function() {
                                             droneDataLoader.confirmUploadParameters(":/parameters/resources/parameters/Quad_N1.params")
