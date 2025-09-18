@@ -1,6 +1,7 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
+import QtQuick 
+import QtQuick.Controls 
+import QtQuick.Layouts 
+
 import Qt5Compat.GraphicalEffects
 import QGroundControl
 import QGroundControl.Controls
@@ -29,8 +30,8 @@ Rectangle {
 
     
     property string selectedType: droneTypes[0]
-    property bool isMobile: ScreenTools.isMobile
-    property int fontSize: isMobile ? 10 : 10
+    property bool isMobile: ScreenTools.isMobile ? true : false
+    property int fontSize: isMobile ? 10 : 14
     property var selectedDrone: null
     property bool showDetailOverlay: false
 
@@ -112,7 +113,7 @@ Rectangle {
                     anchors.fill: parent
                     // cellWidth: isMobile ? (width) : (width / 4)
                     // cellHeight: cellWidth
-                    cellWidth: isMobile ? (width / 3) -  12 : (width / 3) -  12  // trừ đi khoảng spacing
+                    cellWidth: isMobile ? (width / 3) -  12 : (width / 3) -  8  // trừ đi khoảng spacing
                     cellHeight: cellWidth
 
                     model: droneMap[selectedType]
@@ -120,7 +121,7 @@ Rectangle {
                     delegate: Column {
                         width: GridView.view.cellWidth
                         height: GridView.view.cellHeight
-                        spacing: isMobile ? 12 : 12
+                        spacing: isMobile ? 12 : 8
 
                         Item {
                             width: parent.width * 0.9
@@ -272,8 +273,8 @@ Rectangle {
                                         wrapMode: Text.WordWrap
                                     }
                                     Item {
-                                        width: isMobile ? 80 : 80
-                                        height: isMobile ? 26 : 26
+                                        width: isMobile ? 80 : 120
+                                        height: isMobile ? 26 : 32
 
                                         Rectangle {
                                             anchors.fill: parent
@@ -379,16 +380,18 @@ Rectangle {
                 RowLayout {
                     Layout.alignment: Qt.AlignRight
                     spacing: 8
-                    visible: false //true
+                    visible: true
 
                     Item {
                         width: confirmText.paintedWidth + 20
                         height: confirmText.paintedHeight + 10
-                        
+
                         Rectangle {
                             anchors.fill: parent
                             radius: 4
-                            color: qgcPal.globalTheme === QGCPalette.Light ?  mouseArea2.pressed ? "#333" : "#222" : mouseArea2.pressed ? "#0061a2" : "#0070ba"
+                            color: qgcPal.globalTheme === QGCPalette.Light
+                                    ? (mouseArea2.pressed ? "#333" : "#222")
+                                    : (mouseArea2.pressed ? "#0061a2" : "#0070ba")
 
                             Text {
                                 id: confirmText
@@ -402,12 +405,17 @@ Rectangle {
                                 id: mouseArea2
                                 anchors.fill: parent
                                 onClicked: {
-                                    // sau nay sửa thành gọi api upload file tương ứng
-                                    droneDataLoader.confirmUploadParameters(":/parameters/resources/parameters/Quad_N1.params")
-                                    showDetailOverlay = false
-                                    selectedDrone = null
-                                    // thêm thông báo đã upload thành công
-                                    // ...
+                                    mainWindow.showMessageDialog(
+                                        qsTr("Xác nhận Upload"),
+                                        qsTr("Bạn có chắc chắn muốn upload parameters cho drone không?"),
+                                        Dialog.Cancel | Dialog.Ok,
+                                        function() {
+                                            droneDataLoader.confirmUploadParameters(":/parameters/resources/parameters/Quad_N1.params")
+                                            showDetailOverlay = false
+                                            selectedDrone = null
+                                            // TODO: show toast/snackbar báo thành công
+                                        }
+                                    )
                                 }
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
@@ -443,7 +451,7 @@ Rectangle {
                 // Nút đóng
                 Rectangle {
                     id: closeButton
-                    width: isMobile ? 28 : 28
+                    width: isMobile ? 28 : 32
                     height: width
                     radius: 18
                     color: qgcPal.globalTheme === QGCPalette.Light ? "#d3d3d3" : "#3d3d3d"
@@ -476,7 +484,7 @@ Rectangle {
                     ListView {
                         id: galleryListView
                         orientation: ListView.Horizontal
-                        height: Screen.height *  0.8//(isMobile ? 0.8 : 0.6)
+                        height: Screen.height *  0.8
                         anchors.left: parent.left
                         anchors.right: parent.right
                         anchors.top: parent.top
@@ -485,20 +493,20 @@ Rectangle {
                         clip: false  // Cho phép phóng to vượt ra ngoài
                         model: selectedDrone && selectedDrone.gallery ? selectedDrone.gallery : []
                         snapMode: ListView.SnapToItem
-                        preferredHighlightBegin: (width - (Screen.width * (isMobile ? 0.5 : 0.5))) / 2
-                        preferredHighlightEnd: (width - (Screen.width * (isMobile ? 0.5 : 0.5))) / 2
+                        preferredHighlightBegin: (width - (Screen.width * (isMobile ? 0.5 : 0.6))) / 2
+                        preferredHighlightEnd: (width - (Screen.width * (isMobile ? 0.5 : 0.6))) / 2
                         highlightRangeMode: ListView.StrictlyEnforceRange
                         interactive: true
 
                         delegate: Item {
-                            width: (Screen.width * (isMobile ? 0.5 : 0.5))
-                            height: isMobile ? 240 : 240
+                            width: (Screen.width * (isMobile ? 0.5 : 0.6))
+                            height: isMobile ? 240 : 440
                             property real centerPos: galleryListView.contentX + galleryListView.width / 2
                             property real itemCenter: x + width / 2
                             property real dist: Math.abs(itemCenter - centerPos)
-                            property real scaleFactor: Math.max(0.8, 1.2 - dist / (isMobile ? 0.5 : 0.5))
+                            property real scaleFactor: Math.max(0.8, 1.2 - dist / (isMobile ? 0.5 : 0.6))
 
-                            opacity: dist < 20 ? 1.0 : 0.5
+                            opacity: dist < 20 ? 1.0 : (isMobile ? 0.5 : 0.6)
 
                             Behavior on opacity {
                                 NumberAnimation { duration: 150 }

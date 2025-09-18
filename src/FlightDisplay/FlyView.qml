@@ -27,6 +27,8 @@ import QGroundControl.Palette
 import QGroundControl.ScreenTools
 import QGroundControl.Vehicle
 import QGroundControl.Fire 
+
+import QGroundControl.UTMSP
 // 3D Viewer modules
 import Viewer3D
 
@@ -45,7 +47,7 @@ Item {
 
     property bool isPlanView: true
 
-Rectangle {
+    Rectangle {
         visible: !planView.visible
         anchors.fill: parent
         width: ScreenTools.screenWidth
@@ -57,13 +59,13 @@ Rectangle {
         // Header Image (fit theo chiều rộng)
         Image {
             anchors.top: parent.top
-            anchors.topMargin: 5
+            anchors.topMargin: 5 
             anchors.horizontalCenter: parent.horizontalCenter 
-            width: parent.width * 1.45
-            height: parent.height * 0.120  
+            width:  ScreenTools.isMobile ? parent.width * 1.45 : parent.width
+            height: ScreenTools.isMobile ? parent.height * 0.1 : parent.height * 0.08
             source: "qrc:/res/header.png"
             opacity: 0.8
-            fillMode: Image.Stretch  // Cắt để phủ đầy
+            fillMode:Image.Stretch  // Cắt để phủ đầy
         }
 
         // Footer Image (fit theo chiều rộng)
@@ -72,11 +74,11 @@ Rectangle {
             anchors.topMargin: 5
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
-            width: parent.width * 1.45
-            height: parent.height * 0.120
+            width:ScreenTools.isMobile ? parent.width * 1.45 : parent.width
+            height: ScreenTools.isMobile ? parent.height * 0.1 : parent.height * 0.08
             source: "qrc:/res/footer.png"
-            opacity: 0.8
-            fillMode: Image.Stretch // Cắt để phủ đầy
+            opacity: 0.8 
+            fillMode:Image.Stretch   // Cắt để phủ đầy
         }
     }
 
@@ -116,7 +118,7 @@ Rectangle {
         toolbar.dropMainStatusIndicatorTool();
     }
 
-
+    // khối này để tạo vùng cháy và xóa toàn bộ vùng cháy
     Row {
         anchors.left: parent.left
         anchors.bottom: parent.bottom
@@ -189,14 +191,13 @@ Rectangle {
             pipView:    _pipView
         }
 
-            
         // bản đồ nhỏ ở dưới
             PipView {
                 id:                     _pipView
                 anchors.right:          parent.right
                 anchors.top:            parent.top
                 anchors.margins:        _toolsMargin
-                anchors.topMargin:      ScreenTools.isMobile ? toolbar.height + 15 : toolbar.height + 15
+                anchors.topMargin:      ScreenTools.isMobile ? toolbar.height + 18 : toolbar.height + 18
                 item1IsFullSettingsKey: "MainFlyWindowIsMap"
                 item1:                  mapControl
                 item2:                  QGroundControl.videoManager.hasVideo ? videoControl : null
@@ -225,7 +226,7 @@ Rectangle {
             anchors.bottom:         parent.bottom
             anchors.left:           parent.left
             anchors.right:          guidedValueSlider.visible ? guidedValueSlider.left : parent.right
-            z:                      9999
+            z:                      _fullItemZorder + 2
             parentToolInsets:       _toolInsets
             mapControl:             _mapControl
             visible:                !QGroundControl.videoManager.fullScreen
@@ -324,7 +325,16 @@ Rectangle {
         //         }
         //     }
         // }
+        UTMSPActivationStatusBar {
+            activationStartTimestamp:   UTMSPStateStorage.startTimeStamp
+            activationApproval:         UTMSPStateStorage.showActivationTab && QGroundControl.utmspManager.utmspVehicle.vehicleActivation
+            flightID:                   UTMSPStateStorage.flightID
+            anchors.fill:               parent
 
+            function onActivationTriggered(value) {
+                _root.utmspSendActTrigger = value
+            }
+        }
 
     }
 }

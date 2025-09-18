@@ -30,9 +30,7 @@ ApplicationWindow {
     
     visible: true
     visibility: "FullScreen"
-    // flags: Qt.FramelessWindowHint
-    // visibility: "FullScreen"
-    // flags: Qt.Window | Qt.FramelessWindowHint
+    flags: Qt.Window | Qt.FramelessWindowHint
         minimumWidth: ScreenTools.isMobile ? ScreenTools.screenWidth  : Math.min(ScreenTools.defaultFontPixelWidth * 100, Screen.width)
         minimumHeight: ScreenTools.isMobile ? ScreenTools.screenHeight : Math.min(ScreenTools.defaultFontPixelWidth * 50, Screen.height)
         

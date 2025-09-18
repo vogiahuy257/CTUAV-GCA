@@ -1,13 +1,5 @@
-/****************************************************************************
- *
- * (c) 2009-2020 QGROUNDCONTROL PROJECT <http://www.qgroundcontrol.org>
- *
- * QGroundControl is licensed according to the terms in the file
- * COPYING.md in the root of the source code directory.
- *
- ****************************************************************************/
-
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 
 import QGroundControl
@@ -18,48 +10,145 @@ import QGroundControl.ScreenTools
 Rectangle {
     color:          qgcPal.window
     anchors.fill:   parent
+    
 
     readonly property real _margins: ScreenTools.defaultFontPixelHeight
 
     QGCPalette { id: qgcPal; colorGroupEnabled: true }
 
-    QGCFlickable {
-        anchors.margins:    _margins
-        anchors.fill:       parent
-        contentWidth:       grid.width
-        contentHeight:      grid.height
-        clip:               true
+    ColumnLayout {
+        anchors.leftMargin:  _margins
+        anchors.rightMargin: _margins
+        anchors.top:   parent.top
+        anchors.left:  parent.left
+        anchors.right: parent.right
+        spacing:        20
 
-        GridLayout {
-            id:         grid
-            columns:    2
+        Rectangle {
+            Layout.fillWidth: true
 
-            QGCLabel { text: qsTr("QGroundControl User Guide") }
-            QGCLabel {
-                linkColor:          qgcPal.text
-                text:               "<a href=\"https://docs.qgroundcontrol.com\">https://docs.qgroundcontrol.com</a>"
-                onLinkActivated:    (link) => Qt.openUrlExternally(link)
+            height: 160
+            radius: 14
+            color: '#121212'              // nền đen tối giản
+            antialiasing: true
+
+            // đổ bóng nhẹ cho card
+            layer.enabled: true
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 20
+                spacing: 8
+
+                QGCLabel {
+                    text: "CTUAV GroundControl"
+                    font.pixelSize: ScreenTools.defaultFontPixelHeight * 1.2
+                    font.bold: true
+                    color: "white"
+                }
+
+                QGCLabel {
+                    text: "Get the latest release of CTUAV GroundControl for your system"
+                    color: "#cccccc"
+                    font.pixelSize: ScreenTools.defaultFontPixelHeight * 0.7
+                }
+
+                RowLayout {
+                    spacing: 6
+
+                    QGCLabel {
+                        id: linkLabel
+                        text: "<a href=\"https://ctuav-dowloadpage.vercel.app/\">Visit Page</a>"
+                        color: "white"
+                        linkColor: "white"
+                        font.pixelSize: ScreenTools.defaultFontPixelHeight * 0.8
+                        font.bold: true
+                        onLinkActivated: (link) => Qt.openUrlExternally(link)
+                    }
+
+                    QGCLabel {
+                        id: arrowLabel
+                        text: "↗"
+                        color: "white"
+                        font.pixelSize: ScreenTools.defaultFontPixelHeight * 0.8
+                        font.bold: true
+                    }
+                }
             }
 
-            QGCLabel { text: qsTr("PX4 Users Discussion Forum") }
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+
+                onEntered: {
+                    linkLabel.linkColor = "#00bfff"   // xanh nhạt khi hover
+                    arrowLabel.color = "#00bfff"
+                }
+                onExited: {
+                    linkLabel.linkColor = "white"
+                    arrowLabel.color = "white"
+                }
+
+                onClicked: Qt.openUrlExternally("https://ctuav-dowloadpage.vercel.app/")
+            }
+        }
+
+
+        // 📚 PHẦN PHỤ: Resources
+        ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 10
+
             QGCLabel {
-                linkColor:          qgcPal.text
-                text:               "<a href=\"http://discuss.px4.io/c/qgroundcontrol\">http://discuss.px4.io/c/qgroundcontrol</a>"
-                onLinkActivated:    (link) => Qt.openUrlExternally(link)
+                text: "Resources"
+                font.bold: true
+                font.pixelSize: 18
+                color: qgcPal.text
             }
 
-            QGCLabel { text: qsTr("ArduPilot Users Discussion Forum") }
-            QGCLabel {
-                linkColor:          qgcPal.text
-                text:               "<a href=\"https://discuss.ardupilot.org/c/ground-control-software/qgroundcontrol\">https://discuss.ardupilot.org/c/ground-control-software/qgroundcontrol</a>"
-                onLinkActivated:    (link) => Qt.openUrlExternally(link)
-            }
+            Repeater {
+                model: [
+                    { title: "QGroundControl User Guide", url: "https://docs.qgroundcontrol.com" },
+                    { title: "PX4 Users Discussion Forum", url: "http://discuss.px4.io/c/qgroundcontrol" },
+                    { title: "ArduPilot Users Forum", url: "https://discuss.ardupilot.org/c/ground-control-software/qgroundcontrol" },
+                    { title: "QGroundControl Discord Channel", url: "https://discord.com/channels/1022170275984457759/1022185820683255908" }
+                ]
 
-            QGCLabel { text: qsTr("QGroundControl Discord Channel") }
-            QGCLabel {
-                linkColor:          qgcPal.text
-                text:               "<a href=\"https://discord.com/channels/1022170275984457759/1022185820683255908\">https://discord.com/channels/1022170275984457759/1022185820683255908</a>"
-                onLinkActivated:    (link) => Qt.openUrlExternally(link)
+                delegate: Rectangle {
+                    Layout.fillWidth: true
+                    height: 50
+                    radius: 8
+                    color: qgcPal.windowShade
+                    border.color: "#dddddd"
+                    border.width: 1
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: 12
+                        spacing: 12
+
+                        QGCLabel {
+                            text: modelData.title
+                            font.bold: true
+                        }
+                        Item { Layout.fillWidth: true }
+                        QGCLabel {
+                            text: "<a href=\"" + modelData.url + "\">Open</a>"
+                            linkColor: "skyblue"
+                            onLinkActivated: (link) => Qt.openUrlExternally(link)
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onEntered: parent.color = qgcPal.buttonHighlight
+                        onExited: parent.color = qgcPal.windowShade
+                        onClicked: Qt.openUrlExternally(modelData.url)
+                    }
+                }
             }
         }
     }

@@ -111,8 +111,8 @@ Rectangle {
             border.width: 1
             Layout.leftMargin: 8
             Layout.alignment: Qt.AlignVCenter
-            height: currentButton.implicitHeight * 1.02
-            width: currentButton.implicitWidth * 1.2
+            height: ScreenTools.isMobile ? currentButton.implicitHeight * 1.02 : currentButton.implicitHeight * 0.85
+            width: ScreenTools.isMobile ? currentButton.implicitWidth * 1.2 : currentButton.implicitWidth * 1.02
 
             QGCToolBarButton {
                 id: currentButton
